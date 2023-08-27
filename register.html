@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <style>
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Register</h1>
+  <form id="registerForm">
+    <div>
+      <label for="username">Username:</label>
+      <input type="text" id="username" required>
+    </div>
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" required>
+    </div>
+    <div>
+      <button type="submit">Register</button>
+    </div>
+  </form>
+
+  <div id="errorMessage" class="error"></div>
+
+  <script>
+    const registerForm = document.getElementById('registerForm');
+const errorMessage = document.getElementById('errorMessage');
+
+registerForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  if (!username || !password) {
+    errorMessage.textContent = 'Please fill in both username and password fields.';
+    return;
+  }
+
+  const userData = {
+    username: username,
+    password: password,
+  };
+
+  fetch('https://api.hungrygiraffe.xyz/api/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  })
+    .then((response) => {
+      if (response.ok) {
+        window.location.href = '/dashboard.html'; // Redirect to dashboard on successful registration
+      } else {
+        response.json().then((data) => {
+          errorMessage.textContent = data.error;
+        });
+      }
+    })
+    .catch((error) => {
+      errorMessage.textContent = 'An error occurred during registration.';
+      console.error(error);
+    });
+});
+
+  </script>
+</body>
+</html>
